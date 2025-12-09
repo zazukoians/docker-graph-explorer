@@ -12,6 +12,10 @@ import { resolve } from "import-meta-resolve";
 // Server configuration
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const host = process.env.HOST || "0.0.0.0";
+const basePathConfig = process.env.BASE_PATH || "/";
+const basePath = basePathConfig.endsWith("/")
+  ? basePathConfig
+  : `${basePathConfig}/`;
 
 // Graph Explorer configuration
 const endpointUrl = process.env.SPARQL_ENDPOINT || "https://dbpedia.org/sparql";
@@ -36,12 +40,12 @@ const server = Fastify({
 const distPath = resolve("graph-explorer/dist/", import.meta.url);
 server.register(fastifyStatic, {
   root: distPath.replace(/^file:\/\//, ""),
-  prefix: "/graph-explorer/assets/",
+  prefix: `${basePath}assets/`,
   decorateReply: false,
 });
 server.register(fastifyStatic, {
   root: `${currentDir}/static/`,
-  prefix: "/graph-explorer/static/",
+  prefix: `${basePath}static/`,
   decorateReply: false,
 });
 
@@ -54,11 +58,12 @@ server.register(pointOfView, {
   viewExt: "hbs",
 });
 
-server.get("/healthz", async (request, reply) => {
+// Healthz route
+server.get(`${basePath}healthz`, async (request, reply) => {
   reply.type("text/plain").send("OK");
 });
 
-server.get("/", async (request, reply) => {
+server.get(basePath, async (request, reply) => {
   return reply.view("graph-explorer.hbs", {
     // Just forward all the config as a string
     graphExplorerConfig: JSON.stringify({
@@ -71,6 +76,12 @@ server.get("/", async (request, reply) => {
     }).replace(/'/g, "\\'"),
   });
 });
+
+if (basePath !== "/") {
+  server.get(basePath.replace(/\/$/, ""), async (request, reply) => {
+    return reply.redirect(basePath, 301);
+  });
+}
 
 server.listen({ port, host }, (err, address) => {
   if (err) {
