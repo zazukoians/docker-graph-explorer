@@ -1,5 +1,6 @@
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import process from "node:process";
 
 import Fastify from "fastify";
 import pointOfView from "@fastify/view";
@@ -82,6 +83,18 @@ if (basePath !== "/") {
     return reply.redirect(basePath, 301);
   });
 }
+
+["SIGINT", "SIGTERM"].forEach((sig) =>
+  process.on(sig as NodeJS.Signals, () => gracefulShutdown(sig))
+);
+
+const gracefulShutdown = async (signal: string) => {
+  console.log(`Received ${signal}, closing server…`);
+  server.close(() => {
+    console.log("Server closed.");
+    process.exit(0);
+  });
+};
 
 server.listen({ port, host }, (err, address) => {
   if (err) {

@@ -1,16 +1,14 @@
-FROM node:24-alpine
-
+# Build stage: install dependencies
+FROM dhi.io/node:24-alpine3.22-dev AS build
 WORKDIR /app
 
-# Install some system dependencies
-RUN apk add --no-cache tini
-
-# Install dependencies
+# Install dependencies and copy source code
 COPY package.json package-lock.json ./
 RUN npm ci
-
-# Copy application code
 COPY src/ ./src/
 
+# Runtime stage
+FROM dhi.io/node:24-alpine3.22 AS runtime
 EXPOSE 3000
-CMD [ "tini", "--", "npm", "run", "start" ]
+CMD [ "node", "src/index.ts" ]
+COPY --from=build /app/ /app/
