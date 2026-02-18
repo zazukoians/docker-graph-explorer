@@ -85,7 +85,7 @@ if (basePath !== "/") {
 }
 
 ["SIGINT", "SIGTERM"].forEach((sig) =>
-  process.on(sig as NodeJS.Signals, () => gracefulShutdown(sig))
+  process.on(sig as NodeJS.Signals, () => gracefulShutdown(sig)),
 );
 
 const gracefulShutdown = async (signal: string) => {
