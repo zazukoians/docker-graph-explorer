@@ -1,36 +1,144 @@
+/*
+ * Page chrome for the embedded Graph Explorer.
+ *
+ * Graph Explorer scopes its design tokens to `.graph-explorer` so they never
+ * leak into the host page, so the values below mirror them (see
+ * `graph-explorer/styles/_tokens.scss`) to keep the header visually part of
+ * the same application.
+ */
+:root {
+  --app-font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --app-bg: #f1f5f9;
+  --app-surface: #ffffff;
+  --app-surface-3: #f1f5f9;
+  --app-border: #e5e9f0;
+  --app-text: #0f172a;
+  --app-text-muted: #475569;
+  --app-accent: #4f46e5;
+  --app-accent-soft: #eef2ff;
+
+  --app-radius-sm: 6px;
+  --app-radius: 8px;
+  --app-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --app-ring: 0 0 0 3px rgba(79, 70, 229, 0.28);
+  --app-transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --app-header-height: 52px;
+}
+
+html,
 body {
-  font-family: Arial, sans-serif;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   padding: 0;
-  background: #fff;
+  overflow: hidden;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: var(--app-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-header {
-  background-color: #e4e4e4;
-  height: 42px;
+.app-header {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: var(--app-header-height);
+  padding: 0 14px;
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-xs);
+  /* keep the header above the canvas widgets and their shadows */
+  position: relative;
+  z-index: 10;
+}
+
+.app-header__brand {
   display: flex;
   align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.app-header__mark {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--app-radius);
+  background: var(--app-accent-soft);
+  color: var(--app-accent);
+}
+
+.app-header__mark svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.app-header__title {
+  margin: 0;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-header__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ghost icon button, matching the buttons in the Graph Explorer toolbar */
+.app-header__link {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  color: #333;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text-muted);
+  transition: background-color var(--app-transition),
+    color var(--app-transition), box-shadow var(--app-transition);
 }
 
-header h1 {
-  margin: 0 8px;
-  font-size: 1.5em;
+.app-header__link:hover {
+  background: var(--app-surface-3);
+  color: var(--app-text);
 }
 
-header a img {
-  background-color: transparent;
-  transition: all 0.3s ease;
-  padding: 4px;
-  border-radius: 4px;
+.app-header__link:focus-visible {
+  outline: none;
+  box-shadow: var(--app-ring);
 }
 
-header a img:hover {
-  background-color: #ccc;
+.app-header__link svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.app-main {
+  flex: 1 1 auto;
+  /* let the flex item shrink below its content size so the canvas can scroll */
+  min-height: 0;
 }
 
 #graph-explorer-instance {
-  height: calc(100vh - 42px);
-  width: 100vw;
+  width: 100%;
+  height: 100%;
 }

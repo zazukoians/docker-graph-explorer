@@ -1,4 +1,4 @@
-/* global ReactDOM, React, GraphExplorer, graphExplorerConfig */
+/* global GraphExplorer, graphExplorerConfig */
 
 const SparqlDialect = GraphExplorer.OWLStatsSettings
 SparqlDialect.dataLabelProperty = graphExplorerConfig.dataLabelProperty
@@ -59,12 +59,16 @@ const onWorkspaceMounted = async (workspace) => {
 }
 
 const props = {
-  ref: onWorkspaceMounted,
+  /* a ref callback must not return a value: React treats one as a cleanup function */
+  ref: (workspace) => {
+    onWorkspaceMounted(workspace)
+  },
   languages: graphExplorerConfig.languages,
   language: graphExplorerConfig.language,
 }
 
-ReactDOM.render(
-  React.createElement(GraphExplorer.Workspace, props),
+GraphExplorer.renderTo(
+  GraphExplorer.Workspace,
   document.getElementById('graph-explorer-instance'),
+  props,
 )
