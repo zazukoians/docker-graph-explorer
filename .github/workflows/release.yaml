@@ -43,11 +43,11 @@ jobs:
 
       - name: Release or create release PR
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: npm run release
-          commit: "chore: release"
-          title: "Merge to release"
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          # The app token is required so that the pushed release commit and tags trigger other workflows (e.g. the Docker build)
+          github-token: ${{ steps.app-token.outputs.token }}
+          # This expects you to have a script called release which does a build for your packages and calls changeset git-tag
+          publish-script: npm run release
+          commit-message: "chore: release"
+          pr-title: "Merge to release"
