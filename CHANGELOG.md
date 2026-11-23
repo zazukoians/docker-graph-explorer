@@ -1,5 +1,11 @@
 # docker-graph-explorer
 
+## 1.1.1
+
+### Patch Changes
+
+- e44e763: Upgrade various dependencies
+
 ## 1.1.0
 
 ### Minor Changes
