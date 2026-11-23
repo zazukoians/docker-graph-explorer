@@ -1,5 +1,11 @@
 # docker-graph-explorer
 
+## 1.1.0
+
+### Minor Changes
+
+- 4ea0eb0: Bump node version to current LTS, which is v26 in the container image.
+
 ## 1.0.0
 
 ### Major Changes
